@@ -10,42 +10,52 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context).settings.arguments; // Store arg from loading screen
+    data = data.isNotEmpty ? data : ModalRoute.of(context).settings.arguments; // Store arg from loading screen
     String bgImage = data['isDayTime'] ? 'day.jpg' : 'night.jpg';
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
+      backgroundColor: Colors.transparent,
+      /*appBar: AppBar(
         title: Text('World Clock'),
         centerTitle: true,
         backgroundColor: Colors.lightBlue,
-      ),
+      ),*/
       body: SafeArea(
         child: Container(
+          decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/$bgImage'), fit: BoxFit.cover)),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 220.0, 0, 0),
             child: Column(
               children: <Widget>[
                 FlatButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/location');
+                    onPressed: () async {
+                      dynamic result = await Navigator.pushNamed(context, '/location');
+                      setState(() {
+                        data = result;
+                      });
                     },
-                    icon: Icon(Icons.edit_location),
-                    label: Text('Edit Location')),
+                    icon: Icon(
+                      Icons.edit_location,
+                      color: Colors.grey[300],
+                    ),
+                    label: Text(
+                      'Edit Location',
+                      style: TextStyle(color: Colors.grey[300]),
+                    )),
                 SizedBox(height: 20.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       data['location'],
-                      style: TextStyle(fontSize: 30.0, letterSpacing: 2.0),
+                      style: TextStyle(fontSize: 30.0, letterSpacing: 2.0, color: Colors.white),
                     )
                   ],
                 ),
                 SizedBox(height: 20.0),
                 Text(
                   data['time'],
-                  style: TextStyle(fontSize: 60.0),
+                  style: TextStyle(fontSize: 60.0, color: Colors.white),
                 ),
               ],
             ),
